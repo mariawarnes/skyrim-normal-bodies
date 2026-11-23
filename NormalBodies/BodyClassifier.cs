@@ -7,12 +7,13 @@ using Mutagen.Bethesda.Skyrim;
 
 namespace NormalBodies;
 
-/// <summary>The three builds, ordered from least to most muscular.</summary>
+/// <summary>The builds, ordered from lightest to heaviest.</summary>
 public enum BodyType
 {
     Skinny = 0,
     Marathon = 1,
-    Rugby = 2,
+    Chubby = 2,
+    Rugby = 3,
 }
 
 /// <summary>Why an NPC got the body type it did (useful for the log and for tests).</summary>
@@ -90,16 +91,16 @@ public class BodyClassifier
             || classes.Any(IsCombatClass)
             || factionIds.Any(_fighterFaction.IsMatch);
 
-        var isRich = false;
-        if (isFighter)
-        {
-            isRich = factionIds.Any(_richFaction.IsMatch)
+        var isRich = factionIds.Any(_richFaction.IsMatch)
                      || Sources(npc, NpcConfiguration.TemplateFlag.Inventory).Any(HasRichOutfit);
-        }
 
-        var type = !isFighter ? BodyType.Skinny
-            : isRich ? BodyType.Rugby
-            : BodyType.Marathon;
+        var type = (isFighter, isRich) switch
+        {
+            (true, true) => BodyType.Rugby,
+            (true, false) => BodyType.Marathon,
+            (false, true) => BodyType.Chubby,
+            (false, false) => BodyType.Skinny,
+        };
 
         return new Classification(type, isGuard, isFighter, isRich);
     }

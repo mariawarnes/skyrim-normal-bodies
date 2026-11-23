@@ -80,6 +80,7 @@ public class BodyPatcher
     {
         BodyType.Rugby => _settings.Rugby,
         BodyType.Marathon => _settings.Marathon,
+        BodyType.Chubby => _settings.Chubby,
         _ => _settings.Skinny,
     };
 

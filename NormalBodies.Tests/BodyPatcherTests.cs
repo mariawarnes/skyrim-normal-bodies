@@ -127,19 +127,33 @@ public class BodyPatcherTests
     }
 
     [Fact]
-    public void RichNonFighter_StaysSkinny()
+    public void RichNonFighter_IsChubby()
     {
-        var npc = Npc("Noble", 60, _merchant, outfit: _steelPlate);
+        var richKw = _mod.Keywords.AddNew("ClothingRich");
+        var fine = _mod.Armors.AddNew("ClothesFineOutfit");
+        fine.Keywords = new ExtendedList<IFormLinkGetter<IKeywordGetter>> { richKw.ToLink() };
+        var npc = Npc("Noble", 20, _merchant, outfit: OutfitOf("FineClothes", fine));
+        var c = Classifier().Classify(npc);
+        Assert.False(c.IsFighter);
+        Assert.True(c.IsRich);
+        Assert.Equal(BodyType.Chubby, c.Type);
+    }
+
+    [Fact]
+    public void PoorNonFighter_StaysSkinny()
+    {
+        var npc = Npc("Beggar", 20, _merchant, outfit: _farmClothes);
+        Assert.False(Classifier().Classify(npc).IsRich);
         Assert.Equal(BodyType.Skinny, Classifier().Classify(npc).Type);
     }
 
     [Fact]
-    public void RichFactionNonFighter_StaysSkinny()
+    public void RichFactionNonFighter_IsChubby()
     {
-        // e.g. a Thalmor ambassador: rich faction, but not a fighter.
-        var thalmor = _mod.Factions.AddNew("ThalmorFaction");
-        var npc = Npc("Ambassador", 60, _merchant, factions: thalmor);
-        Assert.Equal(BodyType.Skinny, Classifier().Classify(npc).Type);
+        // e.g. a Thalmor ambassador or a Jarl's steward: rich faction, but not a fighter.
+        var steward = _mod.Factions.AddNew("JobStewardFaction");
+        var npc = Npc("Proventus", 20, _merchant, factions: steward);
+        Assert.Equal(BodyType.Chubby, Classifier().Classify(npc).Type);
     }
 
     [Fact]
@@ -187,12 +201,14 @@ public class BodyPatcherTests
         Npc("Farmer", 100);
         Npc("Soldier", 100, _warrior);
         Npc("Knight", 100, _warrior, outfit: _steelPlate);
+        Npc("Merchant", 10, _merchant, outfit: _steelPlate);
         Npc("Beggar", 0); // already skinny: left alone
 
         var plan = Plan();
         Assert.InRange(plan["Farmer"].NewWeight, _settings.Skinny.Min, _settings.Skinny.Max);
         Assert.InRange(plan["Soldier"].NewWeight, _settings.Marathon.Min, _settings.Marathon.Max);
         Assert.InRange(plan["Knight"].NewWeight, _settings.Rugby.Min, _settings.Rugby.Max);
+        Assert.InRange(plan["Merchant"].NewWeight, _settings.Chubby.Min, _settings.Chubby.Max);
         Assert.False(plan.ContainsKey("Beggar"));
     }
 

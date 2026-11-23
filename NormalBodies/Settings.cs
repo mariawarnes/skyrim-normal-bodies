@@ -35,7 +35,7 @@ public enum WeightMode
 public class Settings
 {
     [SynthesisSettingName("Everyone else (skinny)")]
-    [SynthesisTooltip("Weight range for ordinary people: farmers, merchants, mages, beggars, nobles who don't fight, ...")]
+    [SynthesisTooltip("Weight range for ordinary people: farmers, labourers, shopkeepers, mages, beggars, ...")]
     public WeightRange Skinny { get; set; } = new(0, 25);
 
     [SynthesisSettingName("Guards and fighters (marathon runner)")]
@@ -45,6 +45,10 @@ public class Settings
     [SynthesisSettingName("Rich fighters (rugby player)")]
     [SynthesisTooltip("Weight range for well-equipped/well-fed fighters: housecarls, officers, Thalmor, anyone in high-tier armour. Solid, but not a bodybuilder.")]
     public WeightRange Rugby { get; set; } = new(60, 80);
+
+    [SynthesisSettingName("Rich non-fighters (chubby)")]
+    [SynthesisTooltip("Weight range for well-off people who don't fight: Jarls, stewards, nobles, rich merchants, anyone in fine clothes.")]
+    public WeightRange Chubby { get; set; } = new(75, 100);
 
     [SynthesisSettingName("Mode")]
     [SynthesisTooltip("KeepIfInRange only touches NPCs whose current weight is outside their group's range (fewer changed NPCs, fewer FaceGen regenerations). AlwaysReassign rerolls everyone.")]
@@ -61,11 +65,11 @@ public class Settings
     public float FighterSkillShare { get; set; } = 0.5f;
 
     [SynthesisSettingName("Rich outfit value")]
-    [SynthesisTooltip("A fighter whose default outfit's armour pieces are together worth at least this many septims counts as rich.")]
+    [SynthesisTooltip("An NPC whose default outfit's armour/clothing pieces are together worth at least this many septims counts as rich.")]
     public uint RichOutfitValue { get; set; } = 1200;
 
     [SynthesisSettingName("Rich armour material keywords")]
-    [SynthesisTooltip("Editor IDs of armour keywords that mark an outfit as expensive.")]
+    [SynthesisTooltip("Editor IDs of armour/clothing keywords that mark an outfit as expensive.")]
     public List<string> RichArmorKeywords { get; set; } = new()
     {
         "ArmorMaterialSteelPlate",
@@ -97,9 +101,9 @@ public class Settings
         @"Bandit|Soldier|Forsworn|Mercenary|Companions|Dawnguard|Vigilant|Silverhand|Warrior";
 
     [SynthesisSettingName("Rich faction pattern")]
-    [SynthesisTooltip("Regex matched against faction Editor IDs. A fighter in a matching faction counts as rich regardless of outfit.")]
+    [SynthesisTooltip("Regex matched against faction Editor IDs. An NPC in a matching faction counts as rich regardless of outfit.")]
     public string RichFactionPattern { get; set; } =
-        @"Jarl|Housecarl|Thane|Noble|Thalmor|Penitus|Legate|Officer|General|Blades";
+        @"Jarl|Steward|Housecarl|Thane|Noble|Thalmor|Penitus|Legate|Officer|General|Blades";
 
     [SynthesisSettingName("Excluded NPCs")]
     [SynthesisTooltip("NPCs that should never be changed.")]

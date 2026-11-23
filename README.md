@@ -4,11 +4,14 @@ A [Synthesis](https://github.com/Mutagen-Modding/Synthesis) patcher for Skyrim S
 
 | Who | Build | Default weight |
 |---|---|---|
-| Everyone else: farmers, merchants, mages, beggars, nobles who don't fight | **Skinny** | 0–25 |
+| Everyone else: farmers, labourers, shopkeepers, mages, beggars | **Skinny** | 0–25 |
 | Guards, soldiers, bandits, mercenaries, other fighters | **Marathon runner**: lean and wiry | 20–45 |
 | Rich fighters: housecarls, Jarls who fight, Thalmor justiciars, anyone in high-tier armour | **Rugby player**: solid, not sculpted | 60–80 |
+| Rich non-fighters: Jarls, stewards, nobles, Thalmor ambassadors, anyone in fine clothes | **Chubby**: well fed | 75–100 |
 
-Skyrim gives each NPC a body by blending a thin mesh (weight 0) with a heavy, muscular one (weight 100). Many NPCs are set close to 100, which is where the bodybuilder look comes from. This patcher assigns each NPC to one of the three groups above and moves their weight into that group's range. Nothing gets near 100 unless you raise the ranges yourself.
+Skyrim gives each NPC a body by blending a thin mesh (weight 0) with a heavy, muscular one (weight 100). Many NPCs are set close to 100, which is where the bodybuilder look comes from. This patcher assigns each NPC to one of the four groups above and moves their weight into that group's range. Only the rich non-fighters get near 100.
+
+> **About "chubby":** the weight slider only blends between a thin mesh and a heavy one. There is no separate fat setting. On the vanilla body, the heavy end is bulky rather than soft, so chubby NPCs come out broad and heavy-set, without a real belly. Some body mods have a softer heavy mesh, or you can build one in BodySlide. That changes how this group looks; the patcher works the same either way.
 
 It doesn't replace meshes, so it works with the vanilla body or any body mod (CBBE, 3BA, UNP, SOS, SAM, HIMBO, ...). It also works on NPCs added by other mods.
 
@@ -18,12 +21,12 @@ An NPC is a **guard** if a regex (default `Guard`, but not `Guardian`) matches t
 
 An NPC is a **fighter** if it's a guard, or if at least half of its class's skill weights are combat skills (One-Handed, Two-Handed, Archery, Block, Heavy Armor, Light Armor). Membership in a fighter faction also counts: Bandit, Soldier, Forsworn, Mercenary, Companions, Dawnguard, Vigilant, Silverhand, Warrior.
 
-A fighter is **rich** if any of these is true:
+An NPC is **rich** if any of these is true:
 - Their default outfit contains high-tier armour: steel plate, orcish, dwarven, gilded elven, glass, ebony, daedric, dragon, Blades, stalhrim, Nordic carved, chitin heavy, or anything with the `ClothingRich` keyword. A leveled armour list counts only if at least half of its entries are high-tier, so a bandit chief who only rolls ebony at high level stays a marathon runner.
-- The armour pieces in their outfit are worth at least 1200 septims together.
-- They're in a rich faction (`Jarl`, `Housecarl`, `Thane`, `Noble`, `Thalmor`, `Penitus`, `Legate`, `Officer`, `General`, `Blades`).
+- The armour and clothing pieces in their outfit are worth at least 1200 septims together.
+- They're in a rich faction (`Jarl`, `Steward`, `Housecarl`, `Thane`, `Noble`, `Thalmor`, `Penitus`, `Legate`, `Officer`, `General`, `Blades`).
 
-Wealth only matters for fighters. A rich merchant or a Thalmor ambassador stays skinny.
+Rich fighters are rugby players. Rich non-fighters are chubby.
 
 The patcher skips the player, children, non-humanoid creatures, and NPCs in your exclusion list.
 
@@ -37,7 +40,7 @@ The same NPC always gets the same weight within its range, so running the patche
 
 You can change all of these in the Synthesis UI:
 
-- The three weight ranges.
+- The four weight ranges.
 - **Mode**:
   - `KeepIfInRange` (default) only changes NPCs whose current weight is outside their group's range. This keeps vanilla variety and changes as few NPCs as possible.
   - `AlwaysReassign` gives every NPC a new weight.
@@ -69,6 +72,7 @@ The Synthesis log lists every changed NPC with its old and new weight. To get fe
 
 ## Tuning tips
 
+- If chubby NPCs look muscular instead of soft, that comes from your body mesh (see the note above).
 - If marathon runners still look too bulky, your body mod's weight-100 mesh is probably very muscular. Lower the Marathon and Rugby ranges, or build the high-weight body in BodySlide from a less extreme preset.
 - If one specific NPC lands in the wrong group, add them to the exclusion list, or adjust the regexes.
 
@@ -78,4 +82,4 @@ The Synthesis log lists every changed NPC with its old and new weight. To get fe
 dotnet test
 ```
 
-The tests build small in-memory plugins (a guard, a bandit, a housecarl in steel plate, a farmer, a child, a templated guard, ...) and check how each one is sorted and what weight it gets.
+The tests build small in-memory plugins (a guard, a bandit, a housecarl in steel plate, a noble in fine clothes, a farmer, a child, a templated guard, ...) and check how each one is sorted and what weight it gets.
